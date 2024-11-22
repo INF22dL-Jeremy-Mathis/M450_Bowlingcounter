@@ -227,6 +227,7 @@ namespace M450_Bowlingcounter
         {
             int bonus1 = GetNextRollValue(rolls, rollIndex + 1, skipSkips: true);
             int bonus2 = GetNextRollValue(rolls, rollIndex + 2, skipSkips: true);
+
             return 10 + bonus1 + bonus2;
         }
 
@@ -246,10 +247,28 @@ namespace M450_Bowlingcounter
         private int CalculateFrameTenScore(List<string> rolls, int rollIndex)
         {
             int score = 0;
-            for (int i = rollIndex; i < rolls.Count; i++)
+
+            // Sonderregeln für den 10. Frame
+            if (rolls.Count - rollIndex == 3)
             {
-                score += GetRollValue(rolls, i);
+                for (int i = rollIndex; i < rolls.Count; i++)
+                {
+                    score += GetRollValue(rolls, i);
+                }
             }
+            else if (rolls.Count - rollIndex >= 2)
+            {
+                score = GetRollValue(rolls, rollIndex) + GetRollValue(rolls, rollIndex + 1);
+                if (IsStrike(rolls, rollIndex) || IsSpare(rolls, rollIndex + 1))
+                {
+                    score += GetRollValue(rolls, rollIndex + 2);
+                }
+            }
+            else
+            { // Nur 1 Wurf im 10. Frame
+                score = GetRollValue(rolls, rollIndex);
+            }
+
             return score;
         }
 
@@ -263,10 +282,27 @@ namespace M450_Bowlingcounter
                     index++;
                 }
             }
-            return index < rolls.Count ? GetRollValue(rolls, index) : 0;
+
+            // Berücksichtigung von Strikes im 10. Frame
+            if (index < rolls.Count)
+            {
+                if (rolls[index] == "X")
+                {
+                    return 10;
+                }
+                else if (rolls[index] == "/")
+                {
+                    return 10 - GetRollValue(rolls, index - 1);
+                }
+                else
+                {
+                    return GetRollValue(rolls, index);
+                }
+            }
+            return 0;
         }
 
-        private int GetRollValue(List<string> rolls, int index)
+            private int GetRollValue(List<string> rolls, int index)
         {
             if (index >= rolls.Count) return 0;
             if (rolls[index] == "X") return 10;
@@ -313,7 +349,8 @@ namespace M450_Bowlingcounter
                 secondRoll = _roller.Roll(maxPins);
                 HandleRoll(player, secondRoll, 2, frameNumber, firstRoll);
 
-                if (firstRoll + secondRoll >= 10)
+                // Bedingung für den dritten Wurf korrigieren
+                if (secondRoll == 10 || (firstRoll + secondRoll) == 10)
                 {
                     maxPins = 10;
                     thirdRoll = _roller.Roll(maxPins);
@@ -333,6 +370,8 @@ namespace M450_Bowlingcounter
                     player.RecordRoll("-");
                 }
             }
+
+
 
             WaitForFrameEnd();
 
@@ -355,6 +394,7 @@ namespace M450_Bowlingcounter
             {
                 rollResult = "/";
             }
+
             else // Normal roll
             {
                 rollResult = _roller.IsFoul() ? "F" : roll == 0 ? "G" : roll.ToString();
@@ -402,7 +442,7 @@ namespace M450_Bowlingcounter
         private readonly Random _random;
         private readonly double _strikeProbability;
 
-        public RandomRoller(double strikeProbability = 1)
+        public RandomRoller(double strikeProbability = 0.5)
         {
             _random = new Random();
             _strikeProbability = strikeProbability;
