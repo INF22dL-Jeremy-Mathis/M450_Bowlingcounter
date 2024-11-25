@@ -80,7 +80,7 @@ namespace M450_Bowlingcounter
                     }
                     else
                     {
-                        playerLine.Append("   ");
+                        playerLine.Append("   "); // Empty space for missing throws
                     }
                 }
             }

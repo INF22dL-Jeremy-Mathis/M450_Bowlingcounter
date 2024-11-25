@@ -1,7 +1,7 @@
 namespace M450_BowlingcounterTests
 {
     [TestClass]
-    public class BowlingCounterTests
+    public class ProgramTests
     {
         [TestMethod]
         public void TestMethod1()

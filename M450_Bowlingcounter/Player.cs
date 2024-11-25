@@ -39,45 +39,45 @@ namespace M450_Bowlingcounter
             List<string> rolls = this._rolls;
             int score = 0;
             int rollIndex = 0;
-             StringBuilder frameCalculations = new StringBuilder();
+            // StringBuilder frameCalculations = new StringBuilder();
 
             for (int frame = 1; frame <= 10; frame++)
             {
-                string frameString;
+                // string frameString;
 
                 if (frame == 10)
                 {
-                     frameString = $"{GetFrameTenString(rolls, rollIndex)} = {CalculateFrameTenScore(rolls, rollIndex)} + {score} = {score + CalculateFrameTenScore(rolls, rollIndex)}";
+                    // frameString = $"{GetFrameTenString(rolls, rollIndex)} = {CalculateFrameTenScore(rolls, rollIndex)} + {score} = {score + CalculateFrameTenScore(rolls, rollIndex)}";
                     score += CalculateFrameTenScore(rolls, rollIndex);
                     rollIndex += 3; // Handle all rolls in the 10th frame
                 }
                 else if (IsStrike(rolls, rollIndex))
                 {
-                     frameString = $"{GetStrikeFrameString(rolls, rollIndex)} = {CalculateStrikeScore(rolls, rollIndex)} + {score} = {score + CalculateStrikeScore(rolls, rollIndex)}";
+                    // frameString = $"{GetStrikeFrameString(rolls, rollIndex)} = {CalculateStrikeScore(rolls, rollIndex)} + {score} = {score + CalculateStrikeScore(rolls, rollIndex)}";
                     score += CalculateStrikeScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
                 else if (IsSpare(rolls, rollIndex))
                 {
-                     frameString = $"{GetSpareFrameString(rolls, rollIndex)} = {CalculateSpareScore(rolls, rollIndex)} + {score} = {score + CalculateSpareScore(rolls, rollIndex)}";
+                    // frameString = $"{GetSpareFrameString(rolls, rollIndex)} = {CalculateSpareScore(rolls, rollIndex)} + {score} = {score + CalculateSpareScore(rolls, rollIndex)}";
                     score += CalculateSpareScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
                 else
                 {
-                     frameString = $"{GetOpenFrameString(rolls, rollIndex)} = {CalculateOpenFrameScore(rolls, rollIndex)} + {score} = {score + CalculateOpenFrameScore(rolls, rollIndex)}";
+                    // frameString = $"{GetOpenFrameString(rolls, rollIndex)} = {CalculateOpenFrameScore(rolls, rollIndex)} + {score} = {score + CalculateOpenFrameScore(rolls, rollIndex)}";
                     score += CalculateOpenFrameScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
 
                 // Append the frame's string to the overall calculation
-                if (frame > 1)
-                frameCalculations.Append(" | ");
-                 frameCalculations.Append(frameString);
+                // if (frame > 1)
+                // frameCalculations.Append(" | ");
+                //  frameCalculations.Append(frameString);
             }
 
             // Print the final string after processing all frames
-             Console.WriteLine("FrameCalc: " + frameCalculations.ToString());
+            // Console.WriteLine("FrameCalc: " + frameCalculations.ToString());
 
 
             return score;
