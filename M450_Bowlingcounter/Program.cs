@@ -6,32 +6,41 @@ namespace M450_Bowlingcounter
 {
     internal class Program
     {
-        static void Main()
-        {
-            Console.WriteLine("Bowling-Zähler gestartet!");
-
-            List<Player> players = PlayerFactory.CreatePlayers(GetPlayerCount(), PlayerFactory.GetPlayerNameFromConsole);
-
-            Game game = new Game(players, new FrameFactory());
-            game.Start();
-
-            Console.WriteLine(BowlingTable.GetBowlingTable(players));
-
-            Console.WriteLine("\nDrücken Sie eine beliebige Taste, um das Programm zu beenden...");
-            Console.ReadKey();
-        }
-
-        static int GetPlayerCount()
-        {
-            int playerCount;
-            do
+            static void Main()
             {
-                Console.Write("Geben Sie die Anzahl der Spieler ein: ");
-            } while (!int.TryParse(Console.ReadLine(), out playerCount) || playerCount <= 1);
-            Console.WriteLine($"Anzahl der Spieler: {playerCount}");
-            return playerCount;
+                int input;
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("Bowling-Zähler gestartet!");
+
+                    List<Player> players = PlayerFactory.CreatePlayers(GetPlayerCount(), PlayerFactory.GetPlayerNameFromConsole);
+
+                    Game game = new Game(players, new FrameFactory());
+                    game.Start();
+
+                    Console.WriteLine(BowlingTable.GetBowlingTable(players));
+
+                    Console.WriteLine("\nDrücken Sie 0, um zu beenden, oder 1, um erneut zu spielen.");
+                    do
+                    {
+                        Console.Write("Eingabe: ");
+                    } while (!int.TryParse(Console.ReadLine(), out input) || (input != 0 && input != 1));
+
+                } while (input != 0);
+            }
+
+            static int GetPlayerCount()
+            {
+                int playerCount;
+                do
+                {
+                    Console.Write("Geben Sie die Anzahl der Spieler ein: ");
+                } while (!int.TryParse(Console.ReadLine(), out playerCount) || playerCount <= 1);
+                Console.WriteLine($"Anzahl der Spieler: {playerCount}");
+                return playerCount;
+            }
         }
-    }
 
     public static class PlayerFactory
     {
@@ -111,6 +120,8 @@ namespace M450_Bowlingcounter
                 }
                 table.AppendLine("| " + player.CalculateTotalScore().ToString());
 
+                
+
                 table.AppendLine(new string('-', 120));
             }
 
@@ -164,7 +175,7 @@ namespace M450_Bowlingcounter
     public class Player
     {
         public string Name { get; }
-        public int TotalScore { get; private set; }
+        private int TotalScore { get; set; }
         private List<string> Rolls { get; }
 
         public Player(string name)
@@ -194,57 +205,111 @@ namespace M450_Bowlingcounter
             List<string> rolls = this.Rolls;
             int score = 0;
             int rollIndex = 0;
+            // StringBuilder frameCalculations = new StringBuilder();
 
             for (int frame = 1; frame <= 10; frame++)
             {
+                string frameString;
+
                 if (frame == 10)
                 {
+                    // frameString = $"{GetFrameTenString(rolls, rollIndex)} = {CalculateFrameTenScore(rolls, rollIndex)} + {score} = {score + CalculateFrameTenScore(rolls, rollIndex)}";
                     score += CalculateFrameTenScore(rolls, rollIndex);
-                    break;
+                    rollIndex += 3; // Handle all rolls in the 10th frame
                 }
                 else if (IsStrike(rolls, rollIndex))
                 {
+                    // frameString = $"{GetStrikeFrameString(rolls, rollIndex)} = {CalculateStrikeScore(rolls, rollIndex)} + {score} = {score + CalculateStrikeScore(rolls, rollIndex)}";
                     score += CalculateStrikeScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
                 else if (IsSpare(rolls, rollIndex))
                 {
+                    // frameString = $"{GetSpareFrameString(rolls, rollIndex)} = {CalculateSpareScore(rolls, rollIndex)} + {score} = {score + CalculateSpareScore(rolls, rollIndex)}";
                     score += CalculateSpareScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
                 else
                 {
+                    // frameString = $"{GetOpenFrameString(rolls, rollIndex)} = {CalculateOpenFrameScore(rolls, rollIndex)} + {score} = {score + CalculateOpenFrameScore(rolls, rollIndex)}";
                     score += CalculateOpenFrameScore(rolls, rollIndex);
                     rollIndex += 2;
                 }
 
+                // Append the frame's string to the overall calculation
+                //if (frame > 1)
+                    //frameCalculations.Append(" | ");
+                // frameCalculations.Append(frameString);
             }
 
+            // Print the final string after processing all frames
+            // Console.WriteLine("FrameCalc: " + frameCalculations.ToString());
+
+            
             return score;
         }
 
-        private int CalculateStrikeScore(List<string> rolls, int rollIndex)
+        /*
+        private string GetStrikeFrameString(List<string> rolls, int rollIndex)
         {
-            int bonus1 = GetNextRollValue(rolls, rollIndex + 1, skipSkips: true);
-            int bonus2 = GetNextRollValue(rolls, rollIndex + 2, skipSkips: true);
+            int bonus1 = GetRollValue(rolls, rollIndex + 2);
+            int bonus2 = GetRollValue(rolls, rollIndex + 3);
+            if(bonus2 == -1)
+            {
+                bonus2 = GetRollValue(rolls, rollIndex + 4);
+            }
+            return $"10+{bonus1}+{bonus2}";
+        }
+
+        private string GetSpareFrameString(List<string> rolls, int rollIndex)
+        {
+            int firstRoll = GetRollValue(rolls, rollIndex);
+            int bonus = GetRollValue(rolls, rollIndex + 2);
+            return $"{firstRoll}+/+{bonus}";
+        }
+
+        private string GetOpenFrameString(List<string> rolls, int rollIndex)
+        {
+            int firstRoll = GetRollValue(rolls, rollIndex);
+            int secondRoll = GetRollValue(rolls, rollIndex + 1);
+            return $"{firstRoll}+{secondRoll}";
+        }
+
+        private string GetFrameTenString(List<string> rolls, int rollIndex)
+        {
+            int firstRoll = GetRollValue(rolls, rollIndex);
+            int secondRoll = GetRollValue(rolls, rollIndex + 1);
+            int thirdRoll = GetRollValue(rolls, rollIndex + 2);
+            return $"{firstRoll}+{secondRoll}+{thirdRoll}";
+        }
+        */
+
+        public int CalculateStrikeScore(List<string> rolls, int rollIndex)
+        {
+            int bonus1 = GetRollValue(rolls, rollIndex + 2);
+            int bonus2 = GetRollValue(rolls, rollIndex + 3);
+            if (bonus2 == -1)
+            {
+                bonus2 = GetRollValue(rolls, rollIndex + 4);
+            }
 
             return 10 + bonus1 + bonus2;
         }
 
-        private int CalculateSpareScore(List<string> rolls, int rollIndex)
+        public int CalculateSpareScore(List<string> rolls, int rollIndex)
         {
-            int bonus = GetNextRollValue(rolls, rollIndex + 2, skipSkips: true);
+            int bonus = GetRollValue(rolls, rollIndex + 2);
             return 10 + bonus;
         }
 
-        private int CalculateOpenFrameScore(List<string> rolls, int rollIndex)
+        public int CalculateOpenFrameScore(List<string> rolls, int rollIndex)
         {
             int roll1 = GetRollValue(rolls, rollIndex);
             int roll2 = GetRollValue(rolls, rollIndex + 1);
             return roll1 + roll2;
         }
 
-        private int CalculateFrameTenScore(List<string> rolls, int rollIndex)
+        public int CalculateFrameTenScore(List<string> rolls, int rollIndex)
         {
             int score = 0;
 
@@ -272,53 +337,23 @@ namespace M450_Bowlingcounter
             return score;
         }
 
-        private int GetNextRollValue(List<string> rolls, int startIndex, bool skipSkips = false)
-        {
-            int index = startIndex;
-            if (skipSkips)
-            {
-                while (index < rolls.Count && (rolls[index] == "-" || rolls[index] == "G" || rolls[index] == "F"))
-                {
-                    index++;
-                }
-            }
-
-            // Berücksichtigung von Strikes im 10. Frame
-            if (index < rolls.Count)
-            {
-                if (rolls[index] == "X")
-                {
-                    return 10;
-                }
-                else if (rolls[index] == "/")
-                {
-                    return 10 - GetRollValue(rolls, index - 1);
-                }
-                else
-                {
-                    return GetRollValue(rolls, index);
-                }
-            }
-            return 0;
-        }
-
-            private int GetRollValue(List<string> rolls, int index)
+        public int GetRollValue(List<string> rolls, int index)
         {
             if (index >= rolls.Count) return 0;
             if (rolls[index] == "X") return 10;
             if (rolls[index] == "/") return 10 - (index > 0 ? GetRollValue(rolls, index - 1) : 0);
-            if (rolls[index] == "-") return 0;
+            if (rolls[index] == "-") return -1;
             if (rolls[index] == "G") return 0;
             if (rolls[index] == "F") return 0;
             return int.TryParse(rolls[index], out int value) ? value : 0;
         }
 
-        private bool IsStrike(List<string> rolls, int index)
+        public bool IsStrike(List<string> rolls, int index)
         {
             return index < rolls.Count && rolls[index] == "X";
         }
 
-        private bool IsSpare(List<string> rolls, int index)
+        public bool IsSpare(List<string> rolls, int index)
         {
             return index + 1 < rolls.Count && rolls[index + 1] == "/";
         }
@@ -349,12 +384,12 @@ namespace M450_Bowlingcounter
                 secondRoll = _roller.Roll(maxPins);
                 HandleRoll(player, secondRoll, 2, frameNumber, firstRoll);
 
-                // Bedingung für den dritten Wurf korrigieren
-                if (secondRoll == 10 || (firstRoll + secondRoll) == 10)
+                // Bedingung für extra wurf
+                if (firstRoll == 10)
                 {
                     maxPins = 10;
                     thirdRoll = _roller.Roll(maxPins);
-                    HandleRoll(player, thirdRoll, 3, frameNumber);
+                    HandleRoll(player, thirdRoll, 3, frameNumber, secondRoll);
                 }
             }
             else
@@ -379,10 +414,11 @@ namespace M450_Bowlingcounter
         }
 
         private void HandleRoll(Player player, int roll, int rollNumber, int frameNumber, int previousRoll = 0)
+        
         {
             string rollResult;
 
-            if (frameNumber == 10 && roll == 10) // Frame 10, Strike
+            if (frameNumber == 10 && roll == 10 && previousRoll == 10) // Frame 10, Strike
             {
                 rollResult = "X";
             }
@@ -442,7 +478,7 @@ namespace M450_Bowlingcounter
         private readonly Random _random;
         private readonly double _strikeProbability;
 
-        public RandomRoller(double strikeProbability = 0.9)
+        public RandomRoller(double strikeProbability = 0.25)
         {
             _random = new Random();
             _strikeProbability = strikeProbability;
