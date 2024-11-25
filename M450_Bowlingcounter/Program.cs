@@ -442,7 +442,7 @@ namespace M450_Bowlingcounter
         private readonly Random _random;
         private readonly double _strikeProbability;
 
-        public RandomRoller(double strikeProbability = 0.5)
+        public RandomRoller(double strikeProbability = 0.9)
         {
             _random = new Random();
             _strikeProbability = strikeProbability;
