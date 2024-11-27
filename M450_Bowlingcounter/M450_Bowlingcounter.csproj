@@ -49,7 +49,7 @@
     <Compile Include="BowlingTable.cs" />
     <Compile Include="Frame.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="Roller.cs" />
+    <Compile Include="RandomChance.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerFactory.cs" />
     <Compile Include="Program.cs" />

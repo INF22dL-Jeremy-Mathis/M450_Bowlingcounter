@@ -8,7 +8,7 @@ namespace M450_Bowlingcounter
 {
     public static class PlayerFactory
     {
-        public static List<Player> CreatePlayers(int skill)
+        public static List<Player> CreatePlayers()
         {
             List<Player> players = new List<Player>();
             int playerCount = GetPlayerCount();
@@ -16,7 +16,7 @@ namespace M450_Bowlingcounter
             for (int i = 1; i <= playerCount; i++)
             {
                 string playerName = GetPlayerNameFromConsole(i);
-                players.Add(new Player(playerName, skill));
+                players.Add(new Player(playerName));
             }
 
             return players;

@@ -14,16 +14,8 @@ namespace M450_Bowlingcounter
                 Console.Clear();
                 Console.WriteLine("Bowling-Zähler gestartet!");
 
-                // Get skill
-                Console.WriteLine("\nBitte ihre Wunsch-Strike-Rate zwischen 0 und 100 (%) eingeben:");
-                int skill;
-                do
-                {
-                    Console.Write("Eingabe: ");
-                } while (!int.TryParse(Console.ReadLine(), out skill) || skill < 0 || skill > 100);
-
                 // Get and Create Players (all have the same skill level)
-                List<Player> players = PlayerFactory.CreatePlayers(skill);
+                List<Player> players = PlayerFactory.CreatePlayers();
 
 
                 // create and start game
@@ -32,7 +24,7 @@ namespace M450_Bowlingcounter
 
 
                 // print results
-                Console.WriteLine(BowlingTable.GetBowlingTable(players));
+                Console.WriteLine(ScoreBoard.GetScoreBoard(players));
 
 
                 // ask for replay or exit

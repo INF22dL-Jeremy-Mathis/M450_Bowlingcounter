@@ -15,7 +15,7 @@ namespace M450_Bowlingcounter.Tests
             var players = new List<Player>();
 
             // Act
-            string table = BowlingTable.GetBowlingTable(players);
+            string table = ScoreBoard.GetBowlingTable(players);
 
             // Assert
             Assert.IsTrue(table.Contains("Frame     | 1     | 2     | 3     | 4     | 5     | 6     | 7     | 8     | 9     | 10       | Total"));
@@ -55,7 +55,7 @@ namespace M450_Bowlingcounter.Tests
             players[0].RecordRoll("X");
 
             // Act
-            string table = BowlingTable.GetBowlingTable(players);
+            string table = ScoreBoard.GetBowlingTable(players);
             Console.WriteLine(table);
             string awaited = "Alice     | X  -  | 7  /  | 9  /  | X  -  | X  -  | 9  /  | 8  1  | X  -  | X  -  | X  X  X  |";
             Console.WriteLine(awaited);
@@ -125,7 +125,7 @@ namespace M450_Bowlingcounter.Tests
             string charlie = "Charlie   | X  -  | 1  1  | 9  G  | X  -  | F  F  | 1  /  | 5  1  | X  -  | 9  0  | X  1  2  |";
 
             // Act
-            string table = BowlingTable.GetBowlingTable(players);
+            string table = ScoreBoard.GetBowlingTable(players);
             Console.WriteLine(table); // Add this line to see the generated table.
 
             // Assert
@@ -148,7 +148,7 @@ namespace M450_Bowlingcounter.Tests
             }
 
             // Act
-            string table = BowlingTable.GetBowlingTable(players);
+            string table = ScoreBoard.GetBowlingTable(players);
             Console.WriteLine(table);
 
             // Assert

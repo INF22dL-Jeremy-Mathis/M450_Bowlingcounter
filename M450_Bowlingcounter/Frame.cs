@@ -8,13 +8,13 @@ namespace M450_Bowlingcounter
 {
     public class Frame
     {
-        private readonly RandomRoller _roller;
+        private readonly RandomChance _randomChance;
         private int _score;
         private double _foulRate = 0.5;
 
         public Frame()
         {
-            _roller = new RandomRoller();
+            _randomChance = new RandomChance();
             _score = 0;
         }
 
@@ -25,20 +25,32 @@ namespace M450_Bowlingcounter
             int maxPins = 10;
             int firstThrow = 0, secondThrow = 0, thirdThrow = 0;
 
-            firstThrow = _roller.Roll(maxPins, player.GetSkill());
+            do
+            {
+                Console.Write($"Enter the number of pins thrown (0 to {maxPins}): ");
+            } while (!int.TryParse(Console.ReadLine(), out firstThrow) || firstThrow < 0 || firstThrow > maxPins);
+
             HandleThrow(player, firstThrow, 1, frameNumber);
 
             if (frameNumber == 10)
             {
                 maxPins = firstThrow == 10 ? 10 : maxPins - firstThrow;
-                secondThrow = _roller.Roll(maxPins, player.GetSkill());
+                do
+                {
+                    Console.Write($"Enter the number of pins thrown (0 to {maxPins}): ");
+                } while (!int.TryParse(Console.ReadLine(), out secondThrow) || secondThrow < 0 || secondThrow > maxPins);
+
+
                 HandleThrow(player, secondThrow, 2, frameNumber, firstThrow);
 
                 // Bedingung für extra wurf
                 if (firstThrow == 10)
                 {
                     maxPins = 10;
-                    thirdThrow = _roller.Roll(maxPins, player.GetSkill());
+                    do
+                    {
+                        Console.Write($"Enter the number of pins thrown (0 to {maxPins}): ");
+                    } while (!int.TryParse(Console.ReadLine(), out thirdThrow) || thirdThrow < 0 || thirdThrow > maxPins);
                     HandleThrow(player, thirdThrow, 3, frameNumber, secondThrow);
                 }
             }
@@ -47,7 +59,10 @@ namespace M450_Bowlingcounter
                 if (firstThrow != 10)
                 {
                     maxPins -= firstThrow;
-                    secondThrow = _roller.Roll(maxPins, player.GetSkill());
+                    do
+                    {
+                        Console.Write($"Enter the number of pins thrown (0 to {maxPins}): ");
+                    } while (!int.TryParse(Console.ReadLine(), out secondThrow) || secondThrow < 0 || secondThrow > maxPins);
                     HandleThrow(player, secondThrow, 2, frameNumber, firstThrow);
                 }
                 else
@@ -79,7 +94,7 @@ namespace M450_Bowlingcounter
 
             else // Normal roll
             {
-                rollResult = _roller.IsFoul() ? "F" : roll == 0 ? "G" : roll.ToString();
+                rollResult = _randomChance.IsFoul() ? "F" : roll == 0 ? "G" : roll.ToString();
             }
 
 

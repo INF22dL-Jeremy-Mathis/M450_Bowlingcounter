@@ -4,9 +4,9 @@ using System.Text;
 
 namespace M450_Bowlingcounter
 {
-    public static class BowlingTable
+    public static class ScoreBoard
     {
-        public static string GetBowlingTable(List<Player> players)
+        public static string GetScoreBoard(List<Player> players)
         {
             var table = new StringBuilder();
 
